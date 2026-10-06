@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>블럭깨기</title>
+  <style>
+    /* 페이지 배경과 캔버스(게임 화면) 모양 */
+    body {
+      margin: 0;
+      background: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    canvas {
+      background: #000;
+      border: 2px solid #fff;
+    }
+  </style>
+</head>
+<body>
+  <!-- 게임이 그려지는 화면 -->
+  <canvas id="game" width="480" height="320"></canvas>
+
+  <script>
+    // 캔버스와 "붓"(ctx) 가져오기. 모든 그림은 ctx로 그립니다.
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+
+    // ---- 공 ----
+    const ballRadius = 8;
+    let x = canvas.width / 2;      // 공의 가로 위치
+    let y = canvas.height - 30;    // 공의 세로 위치
+    let dx = 2;                    // 한 프레임에 가로로 움직이는 거리
+    let dy = -2;                   // 한 프레임에 세로로 움직이는 거리 (음수 = 위로)
+
+    // ---- 패들(막대) ----
+    const paddleHeight = 10;
+    const paddleWidth = 75;
+    let paddleX = (canvas.width - paddleWidth) / 2;
+
+    // ---- 키보드 입력 ----
+    let rightPressed = false;
+    let leftPressed = false;
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") rightPressed = true;
+      if (e.key === "ArrowLeft") leftPressed = true;
+    });
+    document.addEventListener("keyup", (e) => {
+      if (e.key === "ArrowRight") rightPressed = false;
+      if (e.key === "ArrowLeft") leftPressed = false;
+    });
+
+    // 공 그리기
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    // 패들 그리기
+    function drawPaddle() {
+      ctx.beginPath();
+      ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+      ctx.fillStyle = "#0095dd";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    // 매 프레임마다 호출되는 함수: 지우고 → 그리고 → 위치 갱신
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // 이전 프레임 지우기
+      drawBall();
+      drawPaddle();
+
+      // 좌우 벽에 부딪히면 가로 방향 반전
+      if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+        dx = -dx;
+      }
+      // 천장에 부딪히면 세로 방향 반전
+      if (y + dy < ballRadius) {
+        dy = -dy;
+      } else if (y + dy > canvas.height - ballRadius) {
+        // 바닥 높이에 도달: 패들 위면 튕기고, 아니면 게임 오버
+        if (x > paddleX && x < paddleX + paddleWidth) {
+          dy = -dy;
+        } else {
+          alert("게임 오버! 확인을 누르면 다시 시작합니다.");
+          document.location.reload();
+          return;
+        }
+      }
+
+      // 키 입력에 따라 패들 이동 (화면 밖으로 나가지 않게 제한)
+      if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 5;
+      if (leftPressed && paddleX > 0) paddleX -= 5;
+
+      // 공 이동
+      x += dx;
+      y += dy;
+
+      requestAnimationFrame(draw); // 다음 프레임 예약
+    }
+
+    draw();
+  </script>
+</body>
+</html>
