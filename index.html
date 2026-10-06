@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>블럭깨기</title>
   <style>
     /* 페이지 배경과 캔버스(게임 화면) 모양 */
@@ -13,13 +13,22 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      height: 100dvh; /* 모바일에서 주소창을 뺀 실제 화면 높이 */
+      overflow: hidden;
+      overscroll-behavior: none; /* 당겨서 새로고침 / 스크롤 튕김 방지 */
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
     }
     canvas {
-      /* 화면 높이에 맞춰 줄여서 보여줍니다 (게임 내부 좌표는 그대로) */
-      height: min(96vh, 800px);
-      max-width: 96vw;
+      /* 화면에 맞춰 3:4 비율을 유지하며 줄여서 보여줍니다 (게임 내부 좌표는 그대로) */
+      width: min(96vw, 72vh, 600px);
+      width: min(96vw, 72dvh, 600px);
+      aspect-ratio: 3 / 4;
       background: #000;
       border: 2px solid #fff;
+      touch-action: none; /* 캔버스 위 터치가 스크롤/확대로 쓰이지 않게 */
     }
   </style>
 </head>
@@ -109,6 +118,41 @@
       keys[e.key] = false;
     });
 
+    // ---- 터치(드래그) 입력 ----
+    // 화면 위에서 손가락(또는 마우스)을 드래그하면 그만큼 패들이 상하좌우로 움직입니다.
+    // 패들 위치가 아니라 "움직인 거리"를 따라가기 때문에, 손가락이 패들을 가리지 않습니다.
+    let dragId = null;   // 지금 드래그 중인 손가락의 번호
+    let lastPX = 0;
+    let lastPY = 0;
+    let gameOverAt = 0;  // 게임 오버가 된 시각 (바로 탭해서 재시작되는 실수 방지용)
+
+    canvas.addEventListener("pointerdown", (e) => {
+      if (gameState !== "playing") {
+        // 게임 오버 화면에서 탭하면 다시 시작 (0.7초 뒤부터)
+        if (performance.now() - gameOverAt > 700) document.location.reload();
+        return;
+      }
+      dragId = e.pointerId;
+      lastPX = e.clientX;
+      lastPY = e.clientY;
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener("pointermove", (e) => {
+      if (e.pointerId !== dragId) return;
+      // 화면에 보이는 크기와 게임 내부 좌표 크기의 비율 (화면이 줄어 보여도 맞게 움직이도록)
+      const rect = canvas.getBoundingClientRect();
+      paddleX += (e.clientX - lastPX) * (canvas.width / rect.width);
+      paddleY += (e.clientY - lastPY) * (canvas.height / rect.height);
+      lastPX = e.clientX;
+      lastPY = e.clientY;
+      clampPaddle();
+    });
+    function endDrag(e) {
+      if (e.pointerId === dragId) dragId = null;
+    }
+    canvas.addEventListener("pointerup", endDrag);
+    canvas.addEventListener("pointercancel", endDrag);
+
     // 원(공)과 사각형(패들/블럭)이 부딪혔는지 검사하고, 부딪혔다면 공을 튕깁니다.
     // 부딪혔으면 true를 돌려줍니다.
     function bounceBallOffRect(ball, rx, ry, rw, rh) {
@@ -161,6 +205,11 @@
       if (keys["ArrowLeft"]) paddleX -= paddleSpeed;
       if (keys["ArrowUp"]) paddleY -= paddleSpeed;
       if (keys["ArrowDown"]) paddleY += paddleSpeed;
+      clampPaddle();
+    }
+
+    // 패들이 움직일 수 있는 범위 안에 있도록 제한
+    function clampPaddle() {
       paddleX = Math.max(0, Math.min(canvas.width - paddleWidth, paddleX));
       paddleY = Math.max(paddleMinY, Math.min(canvas.height - paddleHeight, paddleY));
     }
@@ -237,7 +286,7 @@
         ctx.textAlign = "center";
         ctx.fillText("게임 오버 - 점수 " + score, canvas.width / 2, canvas.height / 2);
         ctx.font = "14px sans-serif";
-        ctx.fillText("스페이스를 누르면 다시 시작", canvas.width / 2, canvas.height / 2 + 28);
+        ctx.fillText("스페이스 또는 화면 터치로 다시 시작", canvas.width / 2, canvas.height / 2 + 28);
       }
     }
 
@@ -268,6 +317,7 @@
         // 블럭이 위험선에 닿았거나, 공이 모두 사라지면 게임 오버
         if (bricks.some((b) => b.alive && b.y + brickHeight >= dangerY)) gameState = "over";
         else if (balls.length === 0) gameState = "over";
+        if (gameState === "over") gameOverAt = performance.now();
       }
       draw();
       requestAnimationFrame(loop);
