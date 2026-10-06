@@ -15,6 +15,9 @@
       height: 100vh;
     }
     canvas {
+      /* 화면 높이에 맞춰 줄여서 보여줍니다 (게임 내부 좌표는 그대로) */
+      height: min(96vh, 800px);
+      max-width: 96vw;
       background: #000;
       border: 2px solid #fff;
     }
@@ -22,7 +25,7 @@
 </head>
 <body>
   <!-- 게임이 그려지는 화면 -->
-  <canvas id="game" width="480" height="400"></canvas>
+  <canvas id="game" width="600" height="800"></canvas>
 
   <script>
     // 캔버스와 "붓"(ctx) 가져오기. 모든 그림은 ctx로 그립니다.
@@ -33,27 +36,28 @@
     // 공이 여러 개가 될 수 있어서 배열(목록)로 관리합니다.
     // 각 공: { x, y, dx, dy }  (위치와 한 프레임당 이동 거리)
     const ballRadius = 8;
-    const ballSpeed = 3;
-    let balls = [{ x: canvas.width / 2, y: canvas.height - 40, dx: 2, dy: -2 }];
+    const ballSpeed = 2.2; // 공 속도 (클수록 빠름)
+    let balls = [{ x: canvas.width / 2, y: canvas.height - 40, dx: ballSpeed * 0.7, dy: -ballSpeed * 0.7 }];
 
     // ---- 패들(막대) ----
     const paddleWidth = 75;
     const paddleHeight = 10;
     const paddleSpeed = 5;
-    const paddleMinY = 200; // 패들이 올라갈 수 있는 가장 높은 위치 (블럭 영역 아래)
+    const paddleMinY = 520; // 패들이 올라갈 수 있는 가장 높은 위치 (블럭 영역 아래)
     let paddleX = (canvas.width - paddleWidth) / 2;
     let paddleY = canvas.height - paddleHeight - 10;
 
     // ---- 블럭 ----
-    const brickCols = 8;
+    const brickCols = 10;
     const brickWidth = 50;
     const brickHeight = 18;
     const brickGap = 6;
     const brickOffsetTop = 30;
     const brickOffsetLeft = (canvas.width - (brickCols * (brickWidth + brickGap) - brickGap)) / 2;
 
-    // 블럭 한 줄 만들기. 각 블럭은 15% 확률로 "특별 블럭"(금색)이 됩니다.
+    // 블럭 한 줄 만들기. 각 블럭은 20% 확률로 "특별 블럭"(금색)이 됩니다.
     // 특별 블럭을 깨면 공이 1~10개 복제됩니다.
+    const specialChance = 0.2; // 특별(금색) 블럭이 나올 확률 (20%)
     const rowStep = brickHeight + brickGap; // 한 줄이 내려오는 거리
     function makeRow(y) {
       const row = [];
@@ -61,16 +65,16 @@
         row.push({
           x: brickOffsetLeft + c * (brickWidth + brickGap),
           y: y,
-          special: Math.random() < 0.15,
+          special: Math.random() < specialChance,
           alive: true,
         });
       }
       return row;
     }
 
-    // 시작할 때 4줄로 시작합니다.
+    // 시작할 때 6줄로 시작합니다.
     let bricks = [];
-    for (let r = 0; r < 4; r++) {
+    for (let r = 0; r < 6; r++) {
       bricks = bricks.concat(makeRow(brickOffsetTop + r * rowStep));
     }
 
@@ -79,7 +83,7 @@
     const pointsPerBrick = 10;
     const rowInterval = 10;         // 10초마다 한 줄씩 내려옵니다.
     let rowTimer = rowInterval;     // 다음 줄까지 남은 시간(초)
-    const dangerY = 180;            // 블럭 아랫면이 이 선에 닿으면 게임 오버
+    const dangerY = 460;            // 블럭 아랫면이 이 선에 닿으면 게임 오버
 
     // 모든 블럭을 한 칸 내리고, 맨 위에 새 줄을 추가합니다.
     function addRowFromTop() {
