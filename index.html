@@ -45,7 +45,6 @@
     let paddleY = canvas.height - paddleHeight - 10;
 
     // ---- 블럭 ----
-    const brickRows = 4;
     const brickCols = 8;
     const brickWidth = 50;
     const brickHeight = 18;
@@ -53,22 +52,44 @@
     const brickOffsetTop = 30;
     const brickOffsetLeft = (canvas.width - (brickCols * (brickWidth + brickGap) - brickGap)) / 2;
 
-    // 블럭 목록 만들기. 5번째마다 하나씩 "특별 블럭"(금색)으로 정합니다.
+    // 블럭 한 줄 만들기. 각 블럭은 15% 확률로 "특별 블럭"(금색)이 됩니다.
     // 특별 블럭을 깨면 공이 1~10개 복제됩니다.
-    const bricks = [];
-    for (let r = 0; r < brickRows; r++) {
+    const rowStep = brickHeight + brickGap; // 한 줄이 내려오는 거리
+    function makeRow(y) {
+      const row = [];
       for (let c = 0; c < brickCols; c++) {
-        bricks.push({
+        row.push({
           x: brickOffsetLeft + c * (brickWidth + brickGap),
-          y: brickOffsetTop + r * (brickHeight + brickGap),
-          special: (r * brickCols + c) % 5 === 2,
+          y: y,
+          special: Math.random() < 0.15,
           alive: true,
         });
       }
+      return row;
+    }
+
+    // 시작할 때 4줄로 시작합니다.
+    let bricks = [];
+    for (let r = 0; r < 4; r++) {
+      bricks = bricks.concat(makeRow(brickOffsetTop + r * rowStep));
+    }
+
+    // ---- 점수 / 줄 내려오기 / 위험선 ----
+    let score = 0;
+    const pointsPerBrick = 10;
+    const rowInterval = 10;         // 10초마다 한 줄씩 내려옵니다.
+    let rowTimer = rowInterval;     // 다음 줄까지 남은 시간(초)
+    const dangerY = 180;            // 블럭 아랫면이 이 선에 닿으면 게임 오버
+
+    // 모든 블럭을 한 칸 내리고, 맨 위에 새 줄을 추가합니다.
+    function addRowFromTop() {
+      bricks = bricks.filter((b) => b.alive); // 부서진 블럭은 목록에서 정리
+      for (const b of bricks) b.y += rowStep;
+      bricks = bricks.concat(makeRow(brickOffsetTop));
     }
 
     // ---- 게임 상태 ----
-    let gameState = "playing"; // "playing" | "over" | "won"
+    let gameState = "playing"; // "playing" | "over"
 
     // ---- 키보드 입력 ----
     // 어떤 키가 눌려 있는지 기록해 둡니다.
@@ -161,6 +182,7 @@
         if (!brick.alive) continue;
         if (bounceBallOffRect(ball, brick.x, brick.y, brickWidth, brickHeight)) {
           brick.alive = false;
+          score += pointsPerBrick;
           if (brick.special) spawnClones(ball);
           break;
         }
@@ -188,22 +210,40 @@
         ctx.fill();
       }
 
+      // 위험선 (블럭이 여기에 닿으면 게임 오버)
+      ctx.strokeStyle = "#ff4444";
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(0, dangerY);
+      ctx.lineTo(canvas.width, dangerY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
       ctx.fillStyle = "#fff";
       ctx.font = "14px sans-serif";
       ctx.textAlign = "left";
       ctx.fillText("공: " + balls.length, 8, 18);
+      ctx.textAlign = "center";
+      ctx.fillText("다음 줄: " + Math.ceil(rowTimer) + "초", canvas.width / 2, 18);
+      ctx.textAlign = "right";
+      ctx.fillText("점수: " + score, canvas.width - 8, 18);
 
       if (gameState !== "playing") {
         ctx.font = "28px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText(gameState === "won" ? "클리어!" : "게임 오버", canvas.width / 2, canvas.height / 2);
+        ctx.fillText("게임 오버 - 점수 " + score, canvas.width / 2, canvas.height / 2);
         ctx.font = "14px sans-serif";
         ctx.fillText("스페이스를 누르면 다시 시작", canvas.width / 2, canvas.height / 2 + 28);
       }
     }
 
     // 매 프레임마다 호출되는 함수: 갱신 → 그리기
-    function loop() {
+    let lastTime = null;
+    function loop(now) {
+      // 지난 프레임 이후 흐른 시간(초). 탭이 멈췄다 돌아와도 한꺼번에 크게 건너뛰지 않게 제한합니다.
+      const dt = lastTime === null ? 0 : Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
       if (gameState === "playing") {
         movePaddle();
         // 새로 생긴 공은 다음 프레임부터 움직이도록, 현재 개수만큼만 처리합니다.
@@ -213,14 +253,23 @@
           if (updateBall(ball)) balls.push(ball);
         }
         // updateBall 중에 spawnClones가 balls에 넣은 새 공도 유지됩니다.
-        if (bricks.every((b) => !b.alive)) gameState = "won";
+
+        // 10초마다 한 줄 내리기
+        rowTimer -= dt;
+        if (rowTimer <= 0) {
+          rowTimer += rowInterval;
+          addRowFromTop();
+        }
+
+        // 블럭이 위험선에 닿았거나, 공이 모두 사라지면 게임 오버
+        if (bricks.some((b) => b.alive && b.y + brickHeight >= dangerY)) gameState = "over";
         else if (balls.length === 0) gameState = "over";
       }
       draw();
       requestAnimationFrame(loop);
     }
 
-    loop();
+    requestAnimationFrame(loop);
   </script>
 </body>
 </html>
