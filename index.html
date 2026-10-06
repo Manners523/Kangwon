@@ -22,7 +22,7 @@
 </head>
 <body>
   <!-- 게임이 그려지는 화면 -->
-  <canvas id="game" width="480" height="320"></canvas>
+  <canvas id="game" width="480" height="400"></canvas>
 
   <script>
     // 캔버스와 "붓"(ctx) 가져오기. 모든 그림은 ctx로 그립니다.
@@ -30,84 +30,246 @@
     const ctx = canvas.getContext("2d");
 
     // ---- 공 ----
+    // 공이 여러 개가 될 수 있어서 배열(목록)로 관리합니다.
+    // 각 공: { x, y, dx, dy }  (위치와 한 프레임당 이동 거리)
     const ballRadius = 8;
-    let x = canvas.width / 2;      // 공의 가로 위치
-    let y = canvas.height - 30;    // 공의 세로 위치
-    let dx = 2;                    // 한 프레임에 가로로 움직이는 거리
-    let dy = -2;                   // 한 프레임에 세로로 움직이는 거리 (음수 = 위로)
+    const ballSpeed = 3;
+    let balls = [{ x: canvas.width / 2, y: canvas.height - 40, dx: 2, dy: -2 }];
 
     // ---- 패들(막대) ----
-    const paddleHeight = 10;
     const paddleWidth = 75;
+    const paddleHeight = 10;
+    const paddleSpeed = 5;
+    const paddleMinY = 200; // 패들이 올라갈 수 있는 가장 높은 위치 (블럭 영역 아래)
     let paddleX = (canvas.width - paddleWidth) / 2;
+    let paddleY = canvas.height - paddleHeight - 10;
+
+    // ---- 블럭 ----
+    const brickCols = 8;
+    const brickWidth = 50;
+    const brickHeight = 18;
+    const brickGap = 6;
+    const brickOffsetTop = 30;
+    const brickOffsetLeft = (canvas.width - (brickCols * (brickWidth + brickGap) - brickGap)) / 2;
+
+    // 블럭 한 줄 만들기. 각 블럭은 15% 확률로 "특별 블럭"(금색)이 됩니다.
+    // 특별 블럭을 깨면 공이 1~10개 복제됩니다.
+    const rowStep = brickHeight + brickGap; // 한 줄이 내려오는 거리
+    function makeRow(y) {
+      const row = [];
+      for (let c = 0; c < brickCols; c++) {
+        row.push({
+          x: brickOffsetLeft + c * (brickWidth + brickGap),
+          y: y,
+          special: Math.random() < 0.15,
+          alive: true,
+        });
+      }
+      return row;
+    }
+
+    // 시작할 때 4줄로 시작합니다.
+    let bricks = [];
+    for (let r = 0; r < 4; r++) {
+      bricks = bricks.concat(makeRow(brickOffsetTop + r * rowStep));
+    }
+
+    // ---- 점수 / 줄 내려오기 / 위험선 ----
+    let score = 0;
+    const pointsPerBrick = 10;
+    const rowInterval = 10;         // 10초마다 한 줄씩 내려옵니다.
+    let rowTimer = rowInterval;     // 다음 줄까지 남은 시간(초)
+    const dangerY = 180;            // 블럭 아랫면이 이 선에 닿으면 게임 오버
+
+    // 모든 블럭을 한 칸 내리고, 맨 위에 새 줄을 추가합니다.
+    function addRowFromTop() {
+      bricks = bricks.filter((b) => b.alive); // 부서진 블럭은 목록에서 정리
+      for (const b of bricks) b.y += rowStep;
+      bricks = bricks.concat(makeRow(brickOffsetTop));
+    }
+
+    // ---- 게임 상태 ----
+    let gameState = "playing"; // "playing" | "over"
 
     // ---- 키보드 입력 ----
-    let rightPressed = false;
-    let leftPressed = false;
-
+    // 어떤 키가 눌려 있는지 기록해 둡니다.
+    const keys = {};
     document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight") rightPressed = true;
-      if (e.key === "ArrowLeft") leftPressed = true;
+      keys[e.key] = true;
+      // 방향키를 눌렀을 때 페이지가 스크롤되지 않게 막습니다.
+      if (e.key.startsWith("Arrow")) e.preventDefault();
+      // 게임이 끝난 뒤 스페이스를 누르면 다시 시작
+      if (e.key === " " && gameState !== "playing") document.location.reload();
     });
     document.addEventListener("keyup", (e) => {
-      if (e.key === "ArrowRight") rightPressed = false;
-      if (e.key === "ArrowLeft") leftPressed = false;
+      keys[e.key] = false;
     });
 
-    // 공 그리기
-    function drawBall() {
-      ctx.beginPath();
-      ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-      ctx.fillStyle = "#fff";
-      ctx.fill();
-      ctx.closePath();
-    }
+    // 원(공)과 사각형(패들/블럭)이 부딪혔는지 검사하고, 부딪혔다면 공을 튕깁니다.
+    // 부딪혔으면 true를 돌려줍니다.
+    function bounceBallOffRect(ball, rx, ry, rw, rh) {
+      // 사각형에서 공 중심과 가장 가까운 점 찾기
+      const nearestX = Math.max(rx, Math.min(ball.x, rx + rw));
+      const nearestY = Math.max(ry, Math.min(ball.y, ry + rh));
+      const diffX = ball.x - nearestX;
+      const diffY = ball.y - nearestY;
+      const dist = Math.hypot(diffX, diffY);
+      if (dist >= ballRadius) return false; // 안 부딪힘
 
-    // 패들 그리기
-    function drawPaddle() {
-      ctx.beginPath();
-      ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-      ctx.fillStyle = "#0095dd";
-      ctx.fill();
-      ctx.closePath();
-    }
-
-    // 매 프레임마다 호출되는 함수: 지우고 → 그리고 → 위치 갱신
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // 이전 프레임 지우기
-      drawBall();
-      drawPaddle();
-
-      // 좌우 벽에 부딪히면 가로 방향 반전
-      if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-        dx = -dx;
+      if (dist === 0) {
+        // 공 중심이 사각형 안에 있는 경우: 위로 튕겨 내보냅니다.
+        ball.dy = -Math.abs(ball.dy);
+        ball.y = ry - ballRadius;
+        return true;
       }
-      // 천장에 부딪히면 세로 방향 반전
-      if (y + dy < ballRadius) {
-        dy = -dy;
-      } else if (y + dy > canvas.height - ballRadius) {
-        // 바닥 높이에 도달: 패들 위면 튕기고, 아니면 게임 오버
-        if (x > paddleX && x < paddleX + paddleWidth) {
-          dy = -dy;
-        } else {
-          alert("게임 오버! 확인을 누르면 다시 시작합니다.");
-          document.location.reload();
-          return;
+
+      // 부딪힌 면의 방향(법선)을 구해서, 그 방향으로 튕깁니다.
+      const nx = diffX / dist;
+      const ny = diffY / dist;
+      if (Math.abs(nx) > Math.abs(ny)) {
+        ball.dx = Math.sign(nx) * Math.abs(ball.dx); // 좌/우 면에 맞음
+      } else {
+        ball.dy = Math.sign(ny) * Math.abs(ball.dy); // 위/아래 면에 맞음
+      }
+      // 사각형 안으로 파고들지 않게 밖으로 밀어냅니다.
+      ball.x = nearestX + nx * ballRadius;
+      ball.y = nearestY + ny * ballRadius;
+      return true;
+    }
+
+    // 특별 블럭을 깼을 때: 공(origin)을 1~10개 복제해서 추가합니다.
+    function spawnClones(origin) {
+      const count = 1 + Math.floor(Math.random() * 10); // 1 ~ 10 사이 정수
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2; // 아무 방향
+        balls.push({
+          x: origin.x,
+          y: origin.y,
+          dx: Math.cos(angle) * ballSpeed,
+          dy: Math.sin(angle) * ballSpeed,
+        });
+      }
+    }
+
+    // 패들 이동: 위/아래/왼쪽/오른쪽 방향키 (화면 밖으로 나가지 않게 제한)
+    function movePaddle() {
+      if (keys["ArrowRight"]) paddleX += paddleSpeed;
+      if (keys["ArrowLeft"]) paddleX -= paddleSpeed;
+      if (keys["ArrowUp"]) paddleY -= paddleSpeed;
+      if (keys["ArrowDown"]) paddleY += paddleSpeed;
+      paddleX = Math.max(0, Math.min(canvas.width - paddleWidth, paddleX));
+      paddleY = Math.max(paddleMinY, Math.min(canvas.height - paddleHeight, paddleY));
+    }
+
+    // 공 하나를 한 프레임 움직입니다. 바닥으로 빠졌으면 false를 돌려줍니다.
+    function updateBall(ball) {
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+
+      // 좌우 벽
+      if (ball.x < ballRadius) { ball.x = ballRadius; ball.dx = Math.abs(ball.dx); }
+      if (ball.x > canvas.width - ballRadius) { ball.x = canvas.width - ballRadius; ball.dx = -Math.abs(ball.dx); }
+      // 천장
+      if (ball.y < ballRadius) { ball.y = ballRadius; ball.dy = Math.abs(ball.dy); }
+      // 바닥으로 완전히 빠지면 이 공은 사라집니다.
+      if (ball.y - ballRadius > canvas.height) return false;
+
+      // 패들
+      bounceBallOffRect(ball, paddleX, paddleY, paddleWidth, paddleHeight);
+
+      // 블럭 (한 프레임에 하나만 부수기)
+      for (const brick of bricks) {
+        if (!brick.alive) continue;
+        if (bounceBallOffRect(ball, brick.x, brick.y, brickWidth, brickHeight)) {
+          brick.alive = false;
+          score += pointsPerBrick;
+          if (brick.special) spawnClones(ball);
+          break;
         }
       }
-
-      // 키 입력에 따라 패들 이동 (화면 밖으로 나가지 않게 제한)
-      if (rightPressed && paddleX < canvas.width - paddleWidth) paddleX += 5;
-      if (leftPressed && paddleX > 0) paddleX -= 5;
-
-      // 공 이동
-      x += dx;
-      y += dy;
-
-      requestAnimationFrame(draw); // 다음 프레임 예약
+      return true;
     }
 
-    draw();
+    // ---- 그리기 ----
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (const brick of bricks) {
+        if (!brick.alive) continue;
+        ctx.fillStyle = brick.special ? "#ffd700" : "#e0503c";
+        ctx.fillRect(brick.x, brick.y, brickWidth, brickHeight);
+      }
+
+      ctx.fillStyle = "#0095dd";
+      ctx.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
+
+      ctx.fillStyle = "#fff";
+      for (const ball of balls) {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 위험선 (블럭이 여기에 닿으면 게임 오버)
+      ctx.strokeStyle = "#ff4444";
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(0, dangerY);
+      ctx.lineTo(canvas.width, dangerY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = "#fff";
+      ctx.font = "14px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("공: " + balls.length, 8, 18);
+      ctx.textAlign = "center";
+      ctx.fillText("다음 줄: " + Math.ceil(rowTimer) + "초", canvas.width / 2, 18);
+      ctx.textAlign = "right";
+      ctx.fillText("점수: " + score, canvas.width - 8, 18);
+
+      if (gameState !== "playing") {
+        ctx.font = "28px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("게임 오버 - 점수 " + score, canvas.width / 2, canvas.height / 2);
+        ctx.font = "14px sans-serif";
+        ctx.fillText("스페이스를 누르면 다시 시작", canvas.width / 2, canvas.height / 2 + 28);
+      }
+    }
+
+    // 매 프레임마다 호출되는 함수: 갱신 → 그리기
+    let lastTime = null;
+    function loop(now) {
+      // 지난 프레임 이후 흐른 시간(초). 탭이 멈췄다 돌아와도 한꺼번에 크게 건너뛰지 않게 제한합니다.
+      const dt = lastTime === null ? 0 : Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
+      if (gameState === "playing") {
+        movePaddle();
+        // 새로 생긴 공은 다음 프레임부터 움직이도록, 현재 개수만큼만 처리합니다.
+        const current = balls;
+        balls = [];
+        for (const ball of current) {
+          if (updateBall(ball)) balls.push(ball);
+        }
+        // updateBall 중에 spawnClones가 balls에 넣은 새 공도 유지됩니다.
+
+        // 10초마다 한 줄 내리기
+        rowTimer -= dt;
+        if (rowTimer <= 0) {
+          rowTimer += rowInterval;
+          addRowFromTop();
+        }
+
+        // 블럭이 위험선에 닿았거나, 공이 모두 사라지면 게임 오버
+        if (bricks.some((b) => b.alive && b.y + brickHeight >= dangerY)) gameState = "over";
+        else if (balls.length === 0) gameState = "over";
+      }
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
   </script>
 </body>
 </html>
