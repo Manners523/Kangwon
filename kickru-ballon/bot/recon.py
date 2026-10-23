@@ -12,7 +12,7 @@
 인자:
   --interval 초   화면 변화 확인 주기 (기본 1.5, 최소 0.5). 로컬 DOM 읽기라 서버 요청은 없다.
   --html          전체 HTML 도 저장 (용량 큼).
-  --max N         저장할 화면 최대 수 (기본 300).
+  --max N         저장할 화면 최대 수 (기본 1000).
 종료: 터미널에서 Ctrl+C.
 """
 import argparse
@@ -24,7 +24,7 @@ import time
 
 INTERACTIVE_JS = r"""
 () => {
-  const sel = 'button, a[href], input, select, textarea, [role=button], [role=tab], [role=menuitem], [onclick], [tabindex]';
+  const sel = 'button, a[href], input, select, textarea, canvas, [role=button], [role=tab], [role=menuitem], [onclick], [tabindex]';
   const seen = new Set();
   const out = [];
   const vis = (el) => {
@@ -96,7 +96,7 @@ def main(argv):
     ap.add_argument("--profile", default=".pw-profile")
     ap.add_argument("--out", default=os.path.join("data", "recon"))
     ap.add_argument("--interval", type=float, default=1.5)
-    ap.add_argument("--max", type=int, default=300)
+    ap.add_argument("--max", type=int, default=1000)
     ap.add_argument("--html", action="store_true")
     ap.add_argument("--headless", action="store_true", help="테스트용. 평소에는 창을 보며 직접 진행한다.")
     ap.add_argument("--chrome", default=os.environ.get("KICKRU_CHROME"), help="브라우저 실행 파일 경로(선택)")
