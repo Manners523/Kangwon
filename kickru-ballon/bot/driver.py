@@ -30,10 +30,15 @@ from policy import Policy
 SAVE_KEY = "second-life-football-legends-v2"
 MAX_WAITS = 200      # wait 결정이 연속으로 이 횟수를 넘으면 멈춘다 (서명 대기 약 10분)
 MAX_REPEATS = 6      # 클릭했는데 화면이 그대로인 횟수 한도
+MAX_MISSES = 4       # 클릭 대상이 연속으로 안 보이는 횟수 한도
 
 
 class Halt(Exception):
     pass
+
+
+class NotFound(Exception):
+    """클릭 대상이 화면에 없다. 화면 전환 중일 수 있어 몇 번 다시 읽어 본다."""
 
 
 class NotReady(Exception):
@@ -85,7 +90,7 @@ def execute(page, step, pacer, dry):
     else:
         if el is not None:
             raise NotReady(str(step))
-        raise Halt(f"클릭 대상을 찾지 못함: {step}")
+        raise NotFound(str(step))
     if sc.is_blocked(el):
         raise Halt(f"차단 목록 요소라 누르지 않음: {el.get('text')!r} {el.get('cls')!r}")
     shown = (el.get("text") or "").split("\n")[0][:30] or el["tag"]
@@ -147,7 +152,7 @@ def run(page, args, policy, cfg):
 
     log({"event": "start", "policy": policy.as_dict(), "limits": cfg, "explore": args.explore, "dry_run": args.dry_run})
     last_key, repeats, waits, acted = None, 0, 0, 0
-    last_sid, same_sid = None, 0
+    last_sid, same_sid, misses = None, 0, 0
     while acted < args.max_actions:
         if os.path.exists(args.stop_file):
             print("STOP 파일 감지: 종료합니다.")
@@ -187,6 +192,23 @@ def run(page, args, policy, cfg):
         try:
             for step in dec.steps:
                 labels.append(execute(page, step, pacer, args.dry_run))
+        except NotFound as e:
+            misses += 1
+            if misses >= MAX_MISSES:
+                d = snapshot_unknown(page, read_screen(page), os.path.join(args.data, "recon"),
+                                     f"{sid}: 클릭 대상을 {misses}번 연속 찾지 못함 ({e})")
+                print(f"멈춤: {sid} 에서 클릭 대상을 {misses}번 연속 찾지 못했습니다.\n화면 저장: {d}")
+                log(dict(tick, event="halt", reason="not-found", snapshot=d))
+                return "not-found"
+            if misses == 1:
+                print(f"[재확인] {sid}: 대상이 보이지 않아 화면을 다시 읽습니다")
+            time.sleep(1.0)
+            continue
+        except Halt as e:
+            d = snapshot_unknown(page, read_screen(page), os.path.join(args.data, "recon"), str(e))
+            print(f"멈춤: {sid} - {e}\n화면 저장: {d}")
+            log(dict(tick, event="halt", reason=str(e), snapshot=d))
+            return "halt"
         except NotReady as e:
             waits = waits + 1 if key == last_key else 1
             last_key = key
@@ -197,6 +219,7 @@ def run(page, args, policy, cfg):
                 print(f"[대기] {sid}: 버튼이 아직 비활성 ({e})")
             time.sleep(1.5)
             continue
+        misses = 0
         acted += 1
         same_sid = same_sid + 1 if sid == last_sid else 1
         last_sid = sid
