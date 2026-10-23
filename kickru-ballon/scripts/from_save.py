@@ -40,6 +40,15 @@ def rank_from_result(res):
 
 def convert_life(life, source, position, switch):
     core_id = life["core"]["id"]
+    # core.history[y].overall = 시즌 y 시작 시점 OVR (문서의 '시즌 종료 OVR' 은 y+1 값과 대체로 일치).
+    # 같은 해에 항목이 둘이면(시즌 중 이적) 첫 항목을 쓴다.
+    ovr_by_year = {}
+    for c in life["core"]["history"]:
+        ovr_by_year.setdefault(c["year"], c.get("overall"))
+    # storyLog 는 선택(choice)·계약(sign/extend/decline) 기록. 연도는 로그에 적힌 그대로 붙인다.
+    story_by_year = {}
+    for e in life.get("storyLog", []):
+        story_by_year.setdefault(e["year"], []).append({k: v for k, v in e.items() if k not in ("year",)})
     seasons, skipped = [], []
     for h in life["history"]:
         label = h["seasonLabel"]
@@ -92,12 +101,13 @@ def convert_life(life, source, position, switch):
             note = f"UCL 원문 결과: {ucl_res}"
         seasons.append(dict(
             season=label, age=h.get("age"), team=h.get("team"), league=league_name, position=pos,
-            ovr_start=None, ovr_end=None,  # OVR 위치는 아직 미확인 (core.player 안에 있을 가능성)
+            ovr_start=ovr_by_year.get(h["year"]), ovr_end=ovr_by_year.get(h["year"] + 1),
             apps=apps, starts=st.get("starts"), goals=st.get("goals"), assists=st.get("assists"),
             avg_rating=rating, league_rank=rank_from_result(league_res),
             ucl_result=UCL_MAP.get(ucl_res), cup_result=None, intl_event=intl_event, intl_result=intl_result,
             awards=awards, ballon_status=status, ballon_rank=rank, note=note,
             source=f"{source}:{core_id}",
+            decisions=story_by_year.get(h["year"], []),
             ballon_value=ballon_award["value"] if ballon_award else None,
             ballon_benchmark=ballon_award.get("benchmark") if ballon_award else None,
         ))

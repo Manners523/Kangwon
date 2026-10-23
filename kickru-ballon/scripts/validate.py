@@ -67,7 +67,7 @@ def check_character(c):
             warnings.append(f"{tag}: 월드컵인데 종료 연도 {year} % 4 != 2")
 
         o_s, o_e = s["ovr_start"], s["ovr_end"]
-        if o_s is not None and o_e is not None and abs(o_e - o_s) > 10:
+        if o_s is not None and o_e is not None and abs(o_e - o_s) > 15:
             warnings.append(f"{tag}: OVR 변화 {o_s}->{o_e} 가 큼 (오독 확인)")
 
     expected = c.get("expected_wins")

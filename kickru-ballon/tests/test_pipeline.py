@@ -109,7 +109,7 @@ class IngestTests(unittest.TestCase):
 
 def _season(label, ballon_rank=None, ballon_award=False, nationals=None):
     awards = [{"category": "발롱도르", "name": "x 발롱도르", "value": 5.0, "benchmark": 4.0}] if ballon_award else []
-    h = {"seasonLabel": label, "path": "professional", "age": 25, "team": "T",
+    h = {"seasonLabel": label, "year": int(label[:4]), "path": "professional", "age": 25, "team": "T",
          "stats": {"apps": 40, "starts": 40, "goals": 20, "assists": 10, "ratingSum": 300.0},
          "reports": [{"name": "라리가", "scope": "club", "result": "우승"},
                      {"name": "UEFA 챔피언스리그", "scope": "club", "result": "준결승 탈락"}],
@@ -121,7 +121,9 @@ def _season(label, ballon_rank=None, ballon_award=False, nationals=None):
 
 class FromSaveTests(unittest.TestCase):
     def convert(self, history):
-        life = {"core": {"id": "c1", "player": {"name": "n", "position": "ST", "nationality": "kr"}},
+        life = {"core": {"id": "c1", "player": {"name": "n", "position": "ST", "nationality": "kr"},
+                         "history": [{"year": 2030, "overall": 80}, {"year": 2031, "overall": 83}]},
+                "storyLog": [{"year": 2030, "kind": "choice", "title": "t", "picked": "a", "others": ["b"]}],
                 "history": history, "careerAwards": [{"category": "발롱도르", "awardYear": 2031}]}
         return from_save.convert_life(life, "src", "ST", None)[0]["seasons"]
 
@@ -133,6 +135,13 @@ class FromSaveTests(unittest.TestCase):
         self.assertEqual(s[0]["ballon_value"], 5.0)
         self.assertEqual(s[0]["ucl_result"], "semi")
         self.assertEqual(s[0]["league_rank"], 1)
+
+    def test_ovr_and_decisions(self):
+        s = self.convert([_season("2030/31"), _season("2031/32")])
+        self.assertEqual((s[0]["ovr_start"], s[0]["ovr_end"]), (80, 83))
+        self.assertIsNone(s[1]["ovr_end"])  # 다음 해 값이 없으면 null
+        self.assertEqual(s[0]["decisions"][0]["picked"], "a")
+        self.assertEqual(s[1]["decisions"], [])
 
     def test_national_stats_are_added_to_totals(self):
         nat = [{"selected": True, "id": "worldCup", "result": "준우승 · 2위",

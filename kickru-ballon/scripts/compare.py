@@ -7,7 +7,7 @@ import sys
 
 from common import die, load
 
-FIELDS = ("goals", "assists", "avg_rating", "ballon_status", "ballon_rank", "league_rank", "ucl_result")
+FIELDS = ("ovr_end", "goals", "assists", "avg_rating", "ballon_status", "ballon_rank", "league_rank", "ucl_result")
 TOL = {"avg_rating": 0.011}  # 시드는 소수 2자리 표기
 
 

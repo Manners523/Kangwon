@@ -16,8 +16,8 @@
       "team": "Hamburger SV",
       "league": "분데스리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 70,
+      "ovr_end": 78,
       "apps": 43,
       "starts": 34,
       "goals": 11,
@@ -33,6 +33,39 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 21,
+          "clubId": "br-londrina",
+          "kind": "choice",
+          "title": "육성 방향을 바꿔 보자는 코치의 제안",
+          "picked": "스피드·드리블 세트로 바꾸기",
+          "others": [
+            "스피드·패스 세트 유지",
+            "피지컬·슈팅 세트로 바꾸기"
+          ]
+        },
+        {
+          "age": 21,
+          "clubId": "br-londrina",
+          "kind": "sign",
+          "toClubId": "de-hamburger-sv",
+          "move": "transfer",
+          "fee": 4530000000,
+          "wage": 2894000000,
+          "passed": []
+        },
+        {
+          "age": 22,
+          "clubId": "de-hamburger-sv",
+          "kind": "sign",
+          "toClubId": "de-hamburger-sv",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -42,8 +75,8 @@
       "team": "Hamburger SV",
       "league": null,
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 78,
+      "ovr_end": 82,
       "apps": 35,
       "starts": 33,
       "goals": 19,
@@ -59,6 +92,28 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 23,
+          "clubId": "de-hamburger-sv",
+          "kind": "choice",
+          "title": "반대 발을 익히자는 제안",
+          "picked": "새로운 발을 익힌다",
+          "others": [
+            "현재 강점에 집중한다"
+          ]
+        },
+        {
+          "age": 23,
+          "clubId": "de-hamburger-sv",
+          "kind": "sign",
+          "toClubId": "en-ipswich-town",
+          "move": "transfer",
+          "fee": 33583000000,
+          "wage": 2559000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -68,8 +123,8 @@
       "team": "Ipswich Town",
       "league": "챔피언십",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 82,
+      "ovr_end": 87,
       "apps": 50,
       "starts": 49,
       "goals": 34,
@@ -88,6 +143,28 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 24,
+          "clubId": "en-ipswich-town",
+          "kind": "choice",
+          "title": "스포츠카의 유혹",
+          "picked": "차를 팔고 소형차를 탄다",
+          "others": [
+            "한 번만 밟아본다"
+          ]
+        },
+        {
+          "age": 24,
+          "clubId": "en-ipswich-town",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "transfer",
+          "fee": 147916000000,
+          "wage": 17605000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -97,8 +174,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 87,
+      "ovr_end": 90,
       "apps": 53,
       "starts": 47,
       "goals": 23,
@@ -116,6 +193,18 @@
       "ballon_rank": 8,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 25,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -125,8 +214,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 90,
+      "ovr_end": 92,
       "apps": 58,
       "starts": 56,
       "goals": 37,
@@ -146,6 +235,29 @@
       "ballon_rank": 2,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 26,
+          "clubId": "es-barcelona",
+          "kind": "choice",
+          "title": "육성 방향을 바꿔 보자는 코치의 제안",
+          "picked": "피지컬·슈팅 세트로 바꾸기",
+          "others": [
+            "스피드·드리블 세트 유지",
+            "패스·드리블 세트로 바꾸기"
+          ]
+        },
+        {
+          "age": 26,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -155,8 +267,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 92,
+      "ovr_end": 92,
       "apps": 60,
       "starts": 58,
       "goals": 42,
@@ -176,6 +288,18 @@
       "ballon_rank": 1,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 27,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "renewal",
+          "fee": 0,
+          "wage": 56090000000,
+          "passed": []
+        }
+      ],
       "ballon_value": 5.83,
       "ballon_benchmark": 4.6
     },
@@ -185,8 +309,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 92,
+      "ovr_end": 92,
       "apps": 65,
       "starts": 62,
       "goals": 31,
@@ -204,6 +328,28 @@
       "ballon_rank": 16,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 28,
+          "clubId": "es-barcelona",
+          "kind": "choice",
+          "title": "주장 완장을 맡아달라는 부탁",
+          "picked": "플레이에 집중한다",
+          "others": [
+            "주장 역할을 받아들인다"
+          ]
+        },
+        {
+          "age": 28,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -213,8 +359,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 92,
+      "ovr_end": 92,
       "apps": 60,
       "starts": 59,
       "goals": 28,
@@ -233,6 +379,18 @@
       "ballon_rank": 3,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 29,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -242,8 +400,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 92,
+      "ovr_end": 92,
       "apps": 54,
       "starts": 51,
       "goals": 33,
@@ -264,6 +422,29 @@
       "ballon_rank": 1,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 30,
+          "clubId": "es-barcelona",
+          "kind": "choice",
+          "title": "육성 방향을 바꿔 보자는 코치의 제안",
+          "picked": "피지컬·슈팅 세트 유지",
+          "others": [
+            "수비·피지컬 세트로 바꾸기",
+            "스피드·드리블 세트로 바꾸기"
+          ]
+        },
+        {
+          "age": 30,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": 3.97,
       "ballon_benchmark": 3.97
     },
@@ -273,8 +454,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 92,
+      "ovr_end": 92,
       "apps": 59,
       "starts": 58,
       "goals": 33,
@@ -295,6 +476,28 @@
       "ballon_rank": 1,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 31,
+          "clubId": "es-barcelona",
+          "kind": "choice",
+          "title": "플레이 방식의 재정비",
+          "picked": "익숙한 강점을 지킨다",
+          "others": [
+            "새로운 방식을 익힌다"
+          ]
+        },
+        {
+          "age": 31,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": 5.58,
       "ballon_benchmark": 5.25
     },
@@ -304,8 +507,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 92,
+      "ovr_end": 91,
       "apps": 59,
       "starts": 58,
       "goals": 37,
@@ -326,6 +529,18 @@
       "ballon_rank": 2,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 32,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "renewal",
+          "fee": 0,
+          "wage": 51019000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -335,8 +550,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 91,
+      "ovr_end": 90,
       "apps": 56,
       "starts": 53,
       "goals": 25,
@@ -355,6 +570,25 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 33,
+          "clubId": "es-barcelona",
+          "kind": "decline",
+          "offerClubId": "br-flamengo",
+          "offer": "transfer"
+        },
+        {
+          "age": 33,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -364,8 +598,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 90,
+      "ovr_end": 89,
       "apps": 51,
       "starts": 50,
       "goals": 27,
@@ -384,6 +618,28 @@
       "ballon_rank": 2,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 34,
+          "clubId": "es-barcelona",
+          "kind": "choice",
+          "title": "주장 완장을 맡아달라는 부탁",
+          "picked": "주장 역할을 받아들인다",
+          "others": [
+            "플레이에 집중한다"
+          ]
+        },
+        {
+          "age": 34,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -393,8 +649,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 89,
+      "ovr_end": 85,
       "apps": 56,
       "starts": 48,
       "goals": 25,
@@ -412,6 +668,18 @@
       "ballon_rank": 1,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 35,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": 5.05,
       "ballon_benchmark": 4.61
     },
@@ -421,8 +689,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "ST",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 85,
+      "ovr_end": 91,
       "apps": 53,
       "starts": 43,
       "goals": 24,
@@ -440,6 +708,29 @@
       "ballon_rank": 26,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 36,
+          "clubId": "es-barcelona",
+          "kind": "choice",
+          "title": "더 잘 맞는 포지션을 찾았어요",
+          "picked": "공격형 미드필더(CAM)로 전환",
+          "others": [
+            "왼쪽 윙어(LW)로 전환",
+            "현재 포지션을 유지한다"
+          ]
+        },
+        {
+          "age": 36,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "renewal",
+          "fee": 0,
+          "wage": 21294000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -449,8 +740,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 91,
+      "ovr_end": 87,
       "apps": 40,
       "starts": 40,
       "goals": 10,
@@ -469,6 +760,18 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 37,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "renewal",
+          "fee": 0,
+          "wage": 34643000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -478,8 +781,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 87,
+      "ovr_end": 81,
       "apps": 64,
       "starts": 58,
       "goals": 13,
@@ -498,6 +801,28 @@
       "ballon_rank": 2,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 38,
+          "clubId": "es-barcelona",
+          "kind": "choice",
+          "title": "약한 쪽을 보완하는 개인 훈련",
+          "picked": "기본 자세와 균형을 다진다",
+          "others": [
+            "볼 연결의 선택지를 늘린다"
+          ]
+        },
+        {
+          "age": 38,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "es-barcelona",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -507,8 +832,8 @@
       "team": "FC 바르셀로나",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 81,
+      "ovr_end": 74,
       "apps": 15,
       "starts": 4,
       "goals": 0,
@@ -524,6 +849,33 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-575943787",
+      "decisions": [
+        {
+          "age": 39,
+          "clubId": "es-barcelona",
+          "kind": "choice",
+          "title": "전력 분석관과의 개인 세션",
+          "picked": "영상을 파고든다",
+          "others": [
+            "감각을 믿는다"
+          ]
+        },
+        {
+          "age": 39,
+          "clubId": "es-barcelona",
+          "kind": "extend"
+        },
+        {
+          "age": 39,
+          "clubId": "es-barcelona",
+          "kind": "sign",
+          "toClubId": "br-flamengo",
+          "move": "transfer",
+          "fee": 119000000,
+          "wage": 214000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     }

@@ -72,6 +72,23 @@ localStorage 키 `second-life-football-legends-v2` 하나에 커리어 2개(이�
 - Ikarus 44/45는 평점 7.44 / G+A 46으로 수상했고, 42/43은 7.64 / 59인데 후보 탈락입니다. 개인 스탯만으로는 설명되지 않습니다.
 - 43/44는 UCL 우승, 평점 7.67인데 2위입니다. UCL 우승은 충분조건이 아니라는 점은 유지됩니다.
 
+## 선택지 이력 (세이브에 남는 것 / 안 남는 것)
+
+있음:
+- `life.storyLog[]`: 선택 이벤트(`kind: choice`, 제목·`picked`·`others`), 계약(`sign`: 이적/재계약/잔류, 이적료·주급), `decline`(오퍼 거절), `extend`.
+  데이터A 25건(선택 9), 이카루스 35건(선택 13). 변환본 시즌 행의 `decisions`에 로그 연도 기준으로 붙인다.
+- `core.history[].overall`(OVR), `.rank`(리그 순위), 시즌별 `changes`(능력치 변화), `events`.
+
+없음 또는 불완전:
+- **오퍼 목록**: `sign`에는 `passed`(거절한 대안)만 있고 대부분 비어 있다. 이적 시 어떤 구단들이 제안했는지 알 수 없다.
+- **시즌별 상점 구매·집중 육성·훈련 목표**: 현재 값(`shop.owned`는 순서 없는 목록, `focus`, `trainingTargets`)과 마지막 `thisSeason`만 있다. 시즌별 이력은 없다.
+- 이적 횟수가 커리어당 4~5회, 선택 이벤트도 10여 건이라 **선택 -> 결과 관계를 통계로 추정할 수 없다.**
+  게다가 선택의 효과(능력치 변화)와 숨은 속성(`hiddenCurve`, `potentialGrade`, `developmentStyle`, `hiddenDurability`)이 섞인다.
+  두 커리어는 속성이 달라서(데이터A: early/rising/dribbler, 이카루스: normal/elite/speed) 비교도 교란된다.
+
+OVR: `core.history[y].overall`은 시즌 y 시작 시점으로 보인다. 시드의 '시즌 종료 OVR'과 y+1 값을 비교하면 16칸 중 13칸이 일치하고
+불일치 3칸(31/32 86 vs 87, 34/35 89 vs 90, 45/46 82 vs 91)은 원인 미확인이다. OVR을 모델 입력으로 쓰기 전에 더 확인해야 한다.
+
 ## 다음 단계의 조건
 
 1. 세이브가 쌓이면 같은 순서로 덤프 -> `from_save.py` -> `validate.py` -> `explore.py`.

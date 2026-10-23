@@ -14,8 +14,8 @@
       "team": "Torino",
       "league": "세리에 B",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 68,
+      "ovr_end": 82,
       "apps": 44,
       "starts": 39,
       "goals": 10,
@@ -33,6 +33,38 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 19,
+          "clubId": "kr-jeonbuk-hyundai-motors",
+          "kind": "sign",
+          "toClubId": "it-torino",
+          "move": "transfer",
+          "fee": 4799000000,
+          "wage": 1409000000,
+          "passed": []
+        },
+        {
+          "age": 20,
+          "clubId": "it-torino",
+          "kind": "choice",
+          "title": "반대 발을 익히자는 제안",
+          "picked": "현재 강점에 집중한다",
+          "others": [
+            "새로운 발을 익힌다"
+          ]
+        },
+        {
+          "age": 20,
+          "clubId": "it-torino",
+          "kind": "sign",
+          "toClubId": "de-bayer-leverkusen",
+          "move": "transfer",
+          "fee": 48834000000,
+          "wage": 9810000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -42,8 +74,8 @@
       "team": "바이어 레버쿠젠",
       "league": "분데스리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 82,
+      "ovr_end": 85,
       "apps": 42,
       "starts": 35,
       "goals": 2,
@@ -59,6 +91,20 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 21,
+          "clubId": "de-bayer-leverkusen",
+          "kind": "sign",
+          "toClubId": "de-bayer-leverkusen",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": [
+            "es-barcelona"
+          ]
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -68,8 +114,8 @@
       "team": "바이어 레버쿠젠",
       "league": "분데스리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 85,
+      "ovr_end": 87,
       "apps": 57,
       "starts": 52,
       "goals": 9,
@@ -88,6 +134,29 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 22,
+          "clubId": "de-bayer-leverkusen",
+          "kind": "choice",
+          "title": "육성 방향을 바꿔 보자는 코치의 제안",
+          "picked": "피지컬·슈팅 세트로 바꾸기",
+          "others": [
+            "패스·드리블 세트 유지",
+            "수비·피지컬 세트로 바꾸기"
+          ]
+        },
+        {
+          "age": 22,
+          "clubId": "de-bayer-leverkusen",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "transfer",
+          "fee": 89735000000,
+          "wage": 17720000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -97,8 +166,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 87,
+      "ovr_end": 88,
       "apps": 49,
       "starts": 43,
       "goals": 8,
@@ -118,6 +187,18 @@
       "ballon_rank": 1,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 23,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": 4.99,
       "ballon_benchmark": 4.9
     },
@@ -127,8 +208,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 88,
+      "ovr_end": 89,
       "apps": 47,
       "starts": 42,
       "goals": 9,
@@ -147,6 +228,18 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 24,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -156,8 +249,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 89,
+      "ovr_end": 90,
       "apps": 52,
       "starts": 46,
       "goals": 3,
@@ -176,6 +269,18 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 25,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "renewal",
+          "fee": 0,
+          "wage": 46225000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -185,8 +290,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 90,
+      "ovr_end": 90,
       "apps": 62,
       "starts": 59,
       "goals": 11,
@@ -206,6 +311,18 @@
       "ballon_rank": 1,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 26,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": 5.72,
       "ballon_benchmark": 4.63
     },
@@ -215,8 +332,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 90,
+      "ovr_end": 90,
       "apps": 49,
       "starts": 47,
       "goals": 7,
@@ -236,6 +353,28 @@
       "ballon_rank": 19,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 27,
+          "clubId": "es-real-madrid",
+          "kind": "choice",
+          "title": "주장 완장을 맡아달라는 부탁",
+          "picked": "플레이에 집중한다",
+          "others": [
+            "주장 역할을 받아들인다"
+          ]
+        },
+        {
+          "age": 27,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -245,8 +384,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 90,
+      "ovr_end": 90,
       "apps": 51,
       "starts": 51,
       "goals": 8,
@@ -266,6 +405,28 @@
       "ballon_rank": 2,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 28,
+          "clubId": "es-real-madrid",
+          "kind": "choice",
+          "title": "반대 발을 익히자는 제안",
+          "picked": "현재 강점에 집중한다",
+          "others": [
+            "새로운 발을 익힌다"
+          ]
+        },
+        {
+          "age": 28,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -275,8 +436,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 90,
+      "ovr_end": 90,
       "apps": 50,
       "starts": 46,
       "goals": 7,
@@ -296,6 +457,28 @@
       "ballon_rank": 23,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 29,
+          "clubId": "es-real-madrid",
+          "kind": "choice",
+          "title": "전력 분석관과의 개인 세션",
+          "picked": "영상을 파고든다",
+          "others": [
+            "감각을 믿는다"
+          ]
+        },
+        {
+          "age": 29,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "renewal",
+          "fee": 0,
+          "wage": 46225000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -305,8 +488,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 90,
+      "ovr_end": 90,
       "apps": 45,
       "starts": 45,
       "goals": 4,
@@ -325,6 +508,29 @@
       "ballon_rank": 23,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 30,
+          "clubId": "es-real-madrid",
+          "kind": "choice",
+          "title": "육성 방향을 바꿔 보자는 코치의 제안",
+          "picked": "피지컬·슈팅 세트 유지",
+          "others": [
+            "스피드·드리블 세트로 바꾸기",
+            "패스·드리블 세트로 바꾸기"
+          ]
+        },
+        {
+          "age": 30,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -334,8 +540,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 90,
+      "ovr_end": 89,
       "apps": 47,
       "starts": 46,
       "goals": 9,
@@ -354,6 +560,28 @@
       "ballon_rank": 29,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 31,
+          "clubId": "es-real-madrid",
+          "kind": "choice",
+          "title": "주장 완장을 맡아달라는 부탁",
+          "picked": "플레이에 집중한다",
+          "others": [
+            "주장 역할을 받아들인다"
+          ]
+        },
+        {
+          "age": 31,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -363,8 +591,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 89,
+      "ovr_end": 89,
       "apps": 49,
       "starts": 42,
       "goals": 4,
@@ -383,6 +611,18 @@
       "ballon_rank": 18,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 32,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -392,8 +632,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 89,
+      "ovr_end": 88,
       "apps": 53,
       "starts": 45,
       "goals": 8,
@@ -413,6 +653,18 @@
       "ballon_rank": 2,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 33,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "stay",
+          "fee": 0,
+          "wage": 0,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -422,8 +674,8 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
-      "ovr_end": null,
+      "ovr_start": 88,
+      "ovr_end": 86,
       "apps": 47,
       "starts": 41,
       "goals": 7,
@@ -442,6 +694,18 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [
+        {
+          "age": 34,
+          "clubId": "es-real-madrid",
+          "kind": "sign",
+          "toClubId": "es-real-madrid",
+          "move": "renewal",
+          "fee": 0,
+          "wage": 31384000000,
+          "passed": []
+        }
+      ],
       "ballon_value": null,
       "ballon_benchmark": null
     },
@@ -451,7 +715,7 @@
       "team": "레알 마드리드",
       "league": "라리가",
       "position": "CAM",
-      "ovr_start": null,
+      "ovr_start": 86,
       "ovr_end": null,
       "apps": 52,
       "starts": 38,
@@ -471,6 +735,7 @@
       "ballon_rank": null,
       "note": "",
       "source": "dump:https://kickru.com:2026-10-23T14:27:54.119Z:career-4271635126",
+      "decisions": [],
       "ballon_value": null,
       "ballon_benchmark": null
     }
