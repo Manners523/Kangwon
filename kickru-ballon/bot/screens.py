@@ -114,6 +114,10 @@ def classify(screen):
             return "CONTRACT_NEXT_PATH", "다음 진로 목록"
         return "CONTRACT_LIST", "계약과 진로 목록"
 
+    # 공지 팝업 (랜딩 위에 뜬다)
+    if "‹ 목록" in t and find_button(screen, text="확인", cls="t-primary"):
+        return "NOTICE_DIALOG", "공지 팝업"
+
     # 캐릭터 생성
     if "이 아바타로 할게요" in t or "선수의 모습을" in t:
         return "CREATE_AVATAR", "아바타 선택"

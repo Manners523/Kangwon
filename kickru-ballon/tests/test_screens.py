@@ -37,8 +37,8 @@ class ClassifyTests(unittest.TestCase):
 
     def test_signature_step_needs_human(self):
         # 직접 서명이 필요한 화면은 드라이버가 누를 수 있는 '계약하기'가 없다
-        fx = [n for n, v in json.load(open(os.path.join(FIX, "expected.json"), encoding="utf-8")).items()
-              if v == "CONTRACT_NEED_SIGNATURE"]
+        with open(os.path.join(FIX, "expected.json"), encoding="utf-8") as f:
+            fx = [n for n, v in json.load(f).items() if v == "CONTRACT_NEED_SIGNATURE"]
         self.assertTrue(fx)
         for n in fx:
             self.assertIsNone(screens.find_button(load(n), text="계약하기"))

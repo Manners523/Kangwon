@@ -19,6 +19,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 import time
 
@@ -27,6 +28,7 @@ INTERACTIVE_JS = r"""
   const sel = 'button, a[href], input, select, textarea, canvas, [role=button], [role=tab], [role=menuitem], [onclick], [tabindex]';
   const seen = new Set();
   const out = [];
+  const nodes = [];
   const vis = (el) => {
     const r = el.getBoundingClientRect();
     const cs = getComputedStyle(el);
@@ -38,7 +40,9 @@ INTERACTIVE_JS = r"""
     const r = el.getBoundingClientRect();
     const data = {};
     for (const a of el.attributes) if (a.name.startsWith('data-')) data[a.name] = a.value;
+    nodes.push(el);
     out.push({
+      idx: out.length,
       tag: el.tagName.toLowerCase(),
       text: (el.innerText || el.value || '').trim().slice(0, 120),
       id: el.id || null,
@@ -57,6 +61,7 @@ INTERACTIVE_JS = r"""
   document.querySelectorAll('div, span, li, label').forEach(el => {
     if (getComputedStyle(el).cursor === 'pointer') push(el);
   });
+  window.__kbEls = nodes;  // 클릭 대상 해석용 (페이지 JS 전역 변수일 뿐 DOM 은 바뀌지 않는다)
   return out.slice(0, 300);
 }
 """
@@ -67,7 +72,7 @@ TEXT_JS = "() => document.body ? document.body.innerText : ''"
 def signature(page):
     text = page.evaluate(TEXT_JS)
     # 시계/숫자 애니메이션이 서명을 계속 바꾸지 않도록 숫자는 뭉갠다
-    stable = "".join("#" if c.isdigit() else c for c in text)
+    stable = re.sub(r"\d+", "#", text)
     return page.url + "|" + hashlib.sha1(stable.encode("utf-8")).hexdigest()
 
 

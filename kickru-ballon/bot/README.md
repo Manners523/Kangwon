@@ -1,7 +1,9 @@
 # bot/ 사용법
 
-현재 들어 있는 것은 **화면 기록 도구(recon.py)** 와 **속도 제한 모듈(limits.py)** 뿐이다.
-게임을 대신 플레이하는 드라이버는 아직 없다. 화면 기록을 본 뒤에 만든다.
+- `driver.py`: 자동 플레이 (이 문서 5장)
+- `recon.py`: 화면 기록 (읽기 전용, 직접 플레이하며 기록)
+- `screens.py` / `actions.py` / `policy.py`: 화면 분류, 결정 규칙, 정책 값
+- `limits.py`: 속도 제한 (`config.json`)
 
 ## 1. 준비 (사용자 PC, 한 번만)
 
@@ -59,3 +61,33 @@ python3 bot/recon.py --url https://kickru.com/ --profile .pw-profile
 ```bash
 python3 -m unittest discover -s tests
 ```
+
+## 5. 자동 플레이 (driver.py)
+
+사람이 플레이할 필요가 없다. 처음 한 번만 **직접 서명**이 필요할 수 있다(고교 -> 유스 첫 계약 화면).
+서명 화면이 뜨면 드라이버는 기다린다. 열린 창의 서명 칸에 마우스로 그리고 `계약하기`가 켜지면 자동으로 이어진다.
+
+```
+# 1) 점검 실행: 40 액션만 하고 멈춘다. 창을 보면서 이상한 클릭이 없는지 확인한다.
+python bot/driver.py --name exp-001 --max-actions 40
+
+# 2) 이상 없으면 이어서 (세이브는 .pw-profile 에 유지된다)
+python bot/driver.py --name exp-001 --max-actions 2000
+```
+
+- **모르는 화면**을 만나면 클릭하지 않고 멈춘다. `data/recon/unknown_*/screen.json` (+ png)이 저장된다.
+  그 폴더를 Claude 세션에 올리면 규칙을 추가한다.
+- `--explore`: 모르는 화면에서 `확인/다음/계속` 버튼만 눌러 본다(그 외는 멈춤). 멈추는 횟수가 줄어든다. 첫 점검에는 쓰지 말 것.
+- 멈추려면 작업 폴더에 `STOP` 파일을 만들거나 Ctrl+C.
+- 누르지 않는 것: 지금 은퇴하기, 국가대표 은퇴 선언, 개발자 서버비 내주기(결제), 의견 보내기, 댓글 좋아요, 푸터 링크, 병역(현역 입대/상무 지원), 이적·임대 요청.
+- 종료할 때 세이브 키 하나를 읽기 전용으로 `data/raw/dump_*.json`에 저장한다. 이어서:
+  ```
+  python scripts/from_save.py data/raw/dump_*.json data/real
+  python scripts/validate.py data/real/*.json
+  ```
+- 기록: `data/runs/*.jsonl`에 화면별 선택지 전체(이적 오퍼의 구단·연봉 포함)와 고른 값이 남는다.
+- 정책 옵션: `--turning-point random|first|last`, `--contract stay|best_offer`, `--youth-path club|school`,
+  `--nt-callup join|decline`, `--match-view result_only|watch`, `--seed N`. 무작위 항목은 seed로 재현되고 로그에 남는다.
+- 캐릭터 이름은 `--name`(기본 `exp-001`). 포지션·국적·학교는 게임 기본값을 쓴다.
+- 한국 국적(기본)이면 병역 화면이 나온다. 아직 본 적이 없는 화면이라 드라이버는 거기서 멈출 가능성이 높다.
+- 속도: `config.json`. 하루 새 커리어 수 한도는 `data/.career_budget.json`에 기록된다.

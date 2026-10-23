@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .pw-profile/
+STOP
+data/runs/
+data/.career_budget.json
