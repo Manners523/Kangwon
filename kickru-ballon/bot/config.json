@@ -1,0 +1,13 @@
+{
+  "_comment": "임의로 정한 보수적 기본값이다. 운영팀 허가 답변에 적힌 값이 아니다. 답변의 실제 제한을 알게 되면 그 값(또는 그보다 더 보수적인 값)으로 바꾼다.",
+  "limits_source": "assistant-chosen-conservative-defaults",
+  "permission_note": "운영팀 허가(사용자 보고). 제한 값 원문 미확인.",
+  "max_parallel_browsers": 1,
+  "min_seconds_between_actions": 2.5,
+  "action_jitter_seconds": 1.5,
+  "max_actions_per_minute": 15,
+  "max_careers_per_day": 3,
+  "pause_every_n_actions": 200,
+  "pause_seconds": 30,
+  "ranking_policy": "off_if_possible"
+}
