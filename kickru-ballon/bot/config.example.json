@@ -1,0 +1,10 @@
+{
+  "_comment": "운영팀 허가 답변에 적힌 제한을 그대로 옮긴다. null 인 값이 있으면 드라이버는 실행을 거부한다(아직 드라이버 없음).",
+  "permission_note": "허가 답변의 날짜/요지를 여기에 붙여 둔다",
+  "max_parallel_browsers": null,
+  "min_seconds_between_actions": null,
+  "max_careers_per_day": null,
+  "max_actions_per_minute": null,
+  "ranking_submission": "allowed_by_operator",
+  "ranking_policy": "off_if_possible"
+}

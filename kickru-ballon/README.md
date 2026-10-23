@@ -102,6 +102,13 @@ OVR: `core.history[y].overall`은 시즌 y 시작 시점으로 보인다. 시드
 
 문의문 초안: `docs/inquiry-draft.md` (발송은 사용자가 직접).
 
+## 자동 플레이 준비 (허가 후)
+
+- 운영팀 허가: 사용자 보고(랭킹 등록 허용, 속도·횟수 제한 명시). 제한 값은 `bot/config.example.json`에 옮겨 적어야 한다 (아직 미기재).
+- 실행 환경: 사용자 PC의 Playwright. 이 클라우드 세션은 kickru.com에 접속할 수 없다.
+- 순서: ① `bot/recon.py`로 화면 기록(읽기 전용, 사용자가 직접 진행) -> ② 그 결과를 보고 드라이버 작성 -> ③ `docs/experiment-design.md`의 무작위 배정 실험.
+- 랭킹 등록은 허용됐지만, 실험용 커리어가 랭킹에 쌓이는 것을 피하려면 게임 안 설정에서 끄는 쪽을 권한다.
+
 ## 다음 단계의 조건
 
 1. 세이브가 쌓이면 같은 순서로 덤프 -> `from_save.py` -> `validate.py` -> `explore.py`.
