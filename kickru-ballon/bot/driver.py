@@ -18,6 +18,8 @@ import hashlib
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 import time
 
@@ -120,6 +122,14 @@ def snapshot_unknown(page, screen, outroot, why):
         json.dump(meta, f, ensure_ascii=False, indent=1)
     try:
         page.screenshot(path=os.path.join(d, "screen.png"))
+    except Exception:
+        pass
+    # 올리기 쉽게 ZIP 으로 묶고, Windows 에서는 탐색기에서 그 파일을 선택해 보여 준다
+    try:
+        zip_path = shutil.make_archive(d, "zip", d)
+        print(f"올릴 파일: {os.path.abspath(zip_path)}")
+        if sys.platform == "win32" and not os.environ.get("KICKRU_NO_EXPLORER"):
+            subprocess.Popen(["explorer", "/select,", os.path.abspath(zip_path)])
     except Exception:
         pass
     return d
