@@ -65,6 +65,27 @@ class SeedTests(unittest.TestCase):
 
 
 class IngestTests(unittest.TestCase):
+    def test_double_encoded_array_and_div(self):
+        inner = {"life": {"history": [
+            {"seasonLabel": "2030/31", "stats": {"goals": 3, "apps": 10, "ratingSum": 70.0}},
+            {"seasonLabel": "2031/32", "stats": {"goals": 1, "apps": 0, "ratingSum": 0}},
+        ]}}
+        raw = json.dumps([json.dumps(inner), json.dumps({})])
+        m = {"key": "save", "seasons_path": "0.life.history",
+             "character": {"character_id": "x", "position": "CAM"},
+             "fields": {"season": "seasonLabel", "goals": "stats.goals",
+                        "avg_rating": {"div": ["stats.ratingSum", "stats.apps"]}}}
+        with tempfile.TemporaryDirectory() as d:
+            p = {n: os.path.join(d, n) for n in ("dump", "map", "out")}
+            for n, o in (("dump", {"origin": "o", "dumped_at": "t", "keys": {"save": raw}}), ("map", m)):
+                with open(p[n], "w", encoding="utf-8") as f:
+                    json.dump(o, f)
+            with contextlib.redirect_stdout(io.StringIO()):
+                ingest.convert(p["dump"], p["map"], p["out"])
+            s = load(p["out"])["seasons"]
+            self.assertEqual(s[0]["avg_rating"], 7.0)
+            self.assertIsNone(s[1]["avg_rating"])  # 출장 0 -> 0이 아니라 null
+
     def test_inspect_and_convert(self):
         with tempfile.TemporaryDirectory() as d:
             paths = {n: os.path.join(d, n) for n in ("dump", "map", "out")}

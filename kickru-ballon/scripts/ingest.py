@@ -20,6 +20,8 @@ mapping.json 예:
     "value_maps": {"ballon_status": {"WON": "won", "NC": "not_candidate"}}
   }
 fields 에 없는 스키마 필드는 null 이 된다 (0 으로 채우지 않는다).
+key 의 값이 배열이고 원소가 JSON 문자열이면 seasons_path 를 "0.history" 처럼 인덱스로 시작한다
+(경로 도중의 JSON 문자열은 자동으로 풀린다). 파생값은 {"avg_rating": {"div": ["stats.ratingSum", "stats.apps"]}}.
 """
 import json
 import sys
@@ -71,7 +73,10 @@ def inspect(path):
 
 
 def get_path(obj, path):
+    """점(.)으로 경로를 따라간다. 도중에 JSON 문자열이 나오면 풀어서 계속 간다 (이중 인코딩 대응)."""
     for part in path.split("."):
+        if isinstance(obj, str):
+            obj = parse_value(obj)
         if isinstance(obj, dict):
             obj = obj.get(part)
         elif isinstance(obj, list) and part.isdigit() and int(part) < len(obj):
@@ -87,6 +92,8 @@ def convert(dump_path, mapping_path, out_path):
     if raw is None:
         die(f"덤프에 키 {m['key']!r} 없음")
     seasons_raw = get_path(parse_value(raw), m["seasons_path"])
+    if isinstance(seasons_raw, str):
+        seasons_raw = parse_value(seasons_raw)
     if not isinstance(seasons_raw, list):
         die(f"seasons_path {m['seasons_path']!r} 가 list 가 아님")
 
@@ -98,7 +105,12 @@ def convert(dump_path, mapping_path, out_path):
         for field, path in m["fields"].items():
             if field not in s:
                 die(f"스키마에 없는 필드 {field!r}")
-            val = get_path(item, path)
+            if isinstance(path, dict) and "div" in path:  # 파생값: {"div": ["분자경로", "분모경로"]}
+                num, den = (get_path(item, p) for p in path["div"])
+                ok = isinstance(num, (int, float)) and isinstance(den, (int, float)) and den
+                val = round(num / den, 3) if ok else None  # 분모 0/결측은 null
+            else:
+                val = get_path(item, path)
             if field in maps and val is not None:
                 val = maps[field].get(val, val)
             s[field] = val
