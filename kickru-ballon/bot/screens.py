@@ -114,6 +114,10 @@ def classify(screen):
             return "CONTRACT_NEXT_PATH", "다음 진로 목록"
         return "CONTRACT_LIST", "계약과 진로 목록"
 
+    # 캐릭터 생성 확인 팝업 (집중 육성 화면 위에 겹쳐 뜬다. 뒤 화면의 제목이 그대로 남아 있다)
+    if find_button(screen, text="다시 보기") and find_buttons(screen, text_re=r"시즌 시작$"):
+        return "CREATE_CONFIRM", "다시 보기 + 시즌 시작 팝업"
+
     # 공지 팝업 (랜딩 위에 뜬다)
     if "‹ 목록" in t and find_button(screen, text="확인", cls="t-primary"):
         return "NOTICE_DIALOG", "공지 팝업"

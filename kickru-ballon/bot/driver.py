@@ -36,6 +36,15 @@ class Halt(Exception):
     pass
 
 
+class NotReady(Exception):
+    """대상은 있는데 비활성이다 (연출/시뮬레이션 진행 중). 멈추지 않고 기다린다."""
+
+
+# 같은 화면 id 에서 연속으로 액션을 한 횟수 한도. 지문(해시)이 번갈아 바뀌어도 잡는다.
+MAX_SAME_SID = 6
+SAME_SID_EXEMPT = {"MATCH_LIVE": 40, "SEASON_ADVANCE": 15}
+
+
 def read_screen(page):
     return {"url": page.url, "text": page.evaluate(recon.TEXT_JS), "interactive": page.evaluate(recon.INTERACTIVE_JS)}
 
@@ -68,13 +77,15 @@ def resolve(step, screen):
 
 def execute(page, step, pacer, dry):
     el = None
-    for _ in range(8):  # 비활성 버튼이 켜지길 잠깐 기다린다
+    for _ in range(6):  # 비활성 버튼이 켜지길 잠깐 기다린다
         el = resolve(step, read_screen(page))
         if el is not None and not el["disabled"]:
             break
         time.sleep(0.5)
     else:
-        raise Halt(f"클릭 대상을 찾지 못함/비활성: {step}")
+        if el is not None:
+            raise NotReady(str(step))
+        raise Halt(f"클릭 대상을 찾지 못함: {step}")
     if sc.is_blocked(el):
         raise Halt(f"차단 목록 요소라 누르지 않음: {el.get('text')!r} {el.get('cls')!r}")
     shown = (el.get("text") or "").split("\n")[0][:30] or el["tag"]
@@ -82,9 +93,13 @@ def execute(page, step, pacer, dry):
     if dry:
         return label
     pacer.wait()
-    x, y = page.evaluate(
+    x, y, visible = page.evaluate(
         "(i) => { const el = window.__kbEls[i]; el.scrollIntoView({block: 'center'});"
-        " const r = el.getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; }", el["idx"])
+        " const r = el.getBoundingClientRect(); const x = r.x + r.width / 2, y = r.y + r.height / 2;"
+        " const top = document.elementFromPoint(x, y);"
+        " return [x, y, !!top && (el.contains(top) || top.contains(el))]; }", el["idx"])
+    if not visible:  # 팝업 등에 가려진 요소는 누르지 않는다
+        raise Halt(f"대상이 다른 요소에 가려져 있어 누르지 않음: {shown!r}")
     page.mouse.click(x, y)
     if step.kind == "type":
         page.keyboard.press("Control+A")
@@ -132,6 +147,7 @@ def run(page, args, policy, cfg):
 
     log({"event": "start", "policy": policy.as_dict(), "limits": cfg, "explore": args.explore, "dry_run": args.dry_run})
     last_key, repeats, waits, acted = None, 0, 0, 0
+    last_sid, same_sid = None, 0
     while acted < args.max_actions:
         if os.path.exists(args.stop_file):
             print("STOP 파일 감지: 종료합니다.")
@@ -168,9 +184,29 @@ def run(page, args, policy, cfg):
             return "daily-budget"
 
         labels = []
-        for step in dec.steps:
-            labels.append(execute(page, step, pacer, args.dry_run))
+        try:
+            for step in dec.steps:
+                labels.append(execute(page, step, pacer, args.dry_run))
+        except NotReady as e:
+            waits = waits + 1 if key == last_key else 1
+            last_key = key
+            if waits > MAX_WAITS:
+                print("버튼이 계속 비활성이라 멈춥니다.")
+                return "wait-timeout"
+            if waits == 1:
+                print(f"[대기] {sid}: 버튼이 아직 비활성 ({e})")
+            time.sleep(1.5)
+            continue
         acted += 1
+        same_sid = same_sid + 1 if sid == last_sid else 1
+        last_sid = sid
+        cap = SAME_SID_EXEMPT.get(sid, MAX_SAME_SID)
+        if same_sid > cap:
+            d = snapshot_unknown(page, read_screen(page), os.path.join(args.data, "recon"),
+                                 f"{sid} 에서 {same_sid - 1}번 연속 액션했지만 진행되지 않음")
+            print(f"같은 화면({sid})에서 {same_sid - 1}번 연속 액션해 멈춥니다. 화면 저장: {d}")
+            log(dict(tick, event="halt", reason="same-sid", snapshot=d))
+            return "stuck-sid"
         print(f"[{acted:03d}] {sid:22} -> {'; '.join(labels)}" + (f"   {dec.log.get('picked', '')}" if dec.log.get("picked") else ""))
         log(dict(tick, steps=labels))
         if args.dry_run:
@@ -234,7 +270,10 @@ def main(argv):
             path = None if args.dry_run else dump_save(page, os.path.join(args.data, "raw"))
             if path:
                 print(f"세이브 덤프(읽기 전용): {path}")
-            ctx.close()
+            try:
+                ctx.close()
+            except Exception:  # Ctrl+C 로 브라우저 연결이 먼저 끊긴 경우 등
+                pass
     print(f"종료: {result}")
 
 

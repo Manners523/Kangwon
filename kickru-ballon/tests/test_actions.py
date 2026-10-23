@@ -38,6 +38,26 @@ class DecideTests(unittest.TestCase):
                 self.assertFalse(sc.is_blocked(el), (name, sid, st, el.get("text")))
         self.assertGreater(n_steps, 20)
 
+    def test_focus_confirm_popup_is_not_taken_for_focus_screen(self):
+        # 실제 사고: 선수 만들기 후 확인 팝업이 뜨면 뒤 화면 제목이 남아 CREATE_FOCUS 로 오분류되어 무한 반복
+        scr = json.load(open(os.path.join(FIX, "010.json"), encoding="utf-8"))
+        sid, _ = sc.classify(scr)
+        self.assertEqual(sid, "CREATE_CONFIRM")
+        d = ac.decide(sid, scr, Policy())
+        el = driver.resolve(d.steps[0], scr)
+        self.assertEqual(el["text"], "고1 시즌 시작")
+
+    def test_focus_selection_is_idempotent(self):
+        before = json.load(open(os.path.join(FIX, "009.json"), encoding="utf-8"))
+        d = ac.decide("CREATE_FOCUS", before, Policy())
+        self.assertEqual([s.text for s in d.steps], ["슈팅", "피지컬", "선수 만들기"])
+        after = json.loads(json.dumps(before))
+        for e in after["interactive"]:
+            if e.get("text") == "선수 만들기":
+                e["disabled"] = False  # 선택이 되어 확정 버튼이 켜진 상태
+        d2 = ac.decide("CREATE_FOCUS", after, Policy())
+        self.assertEqual([s.text for s in d2.steps], ["선수 만들기"])  # 다시 눌러 선택을 해제하지 않는다
+
     def test_unknown_stops(self):
         d = ac.decide(sc.UNKNOWN, {"text": "x", "interactive": []}, Policy())
         self.assertTrue(d.stop)

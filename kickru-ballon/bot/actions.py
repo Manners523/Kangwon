@@ -69,8 +69,14 @@ def decide(sid, screen, policy):
         return Decision([click(cls="su-cand", nth=i), click("이 스타일로 할게요")],
                         log={"options": names, "picked": names[i]})
     if sid == "CREATE_FOCUS":
+        make = sc.find_button(screen, text="선수 만들기", enabled=False)
+        if make is not None and not make.get("disabled"):
+            # 이미 무언가 선택되어 활성화된 상태: 다시 누르면 선택이 해제될 수 있으니 확정만 누른다
+            return Decision([click("선수 만들기")], log={"picked": "(이미 선택됨)"})
         return Decision([click(a, tag="button") for a in policy.focus] + [click("선수 만들기")],
                         log={"picked": list(policy.focus)})
+    if sid == "CREATE_CONFIRM":
+        return Decision([Step("click", text_re=r"시즌 시작$")])
     if sid == "SEASON_INTRO":
         return Decision([Step("click", text_re=r"시즌 보내기$")])
     if sid == "SEASON_ADVANCE":

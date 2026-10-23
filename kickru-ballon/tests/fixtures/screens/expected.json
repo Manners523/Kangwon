@@ -6,7 +6,7 @@
  "007.json": "CREATE_STYLE",
  "008.json": "CREATE_STYLE",
  "009.json": "CREATE_FOCUS",
- "010.json": "CREATE_FOCUS",
+ "010.json": "CREATE_CONFIRM",
  "011.json": "SEASON_INTRO",
  "012.json": "SEASON_END",
  "013.json": "HOME",
