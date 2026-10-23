@@ -7,7 +7,7 @@ SEASON_RE = re.compile(r"^(\d{4})/(\d{2})$")
 STATUSES = ("won", "ranked", "not_candidate", "unknown")
 UCL_VALUES = (
     "winner", "final", "semi", "quarter", "round_of_16",
-    "league_phase_exit", "not_qualified",
+    "league_phase_exit", "not_qualified", "playoff_exit", "group_exit",
 )
 SEASON_KEYS = (
     "season", "age", "team", "league", "position", "ovr_start", "ovr_end",

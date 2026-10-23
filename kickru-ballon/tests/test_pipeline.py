@@ -12,6 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 
+import from_save  # noqa: E402
 import ingest  # noqa: E402
 import validate  # noqa: E402
 from common import ballon_year, load  # noqa: E402
@@ -104,6 +105,46 @@ class IngestTests(unittest.TestCase):
             self.assertIsNone(out["seasons"][0]["assists"])  # 결측은 0이 아니라 null
             errors, _ = validate.check_character(out)
             self.assertEqual(errors, [])
+
+
+def _season(label, ballon_rank=None, ballon_award=False, nationals=None):
+    awards = [{"category": "발롱도르", "name": "x 발롱도르", "value": 5.0, "benchmark": 4.0}] if ballon_award else []
+    h = {"seasonLabel": label, "path": "professional", "age": 25, "team": "T",
+         "stats": {"apps": 40, "starts": 40, "goals": 20, "assists": 10, "ratingSum": 300.0},
+         "reports": [{"name": "라리가", "scope": "club", "result": "우승"},
+                     {"name": "UEFA 챔피언스리그", "scope": "club", "result": "준결승 탈락"}],
+         "awards": awards, "nationals": nationals or []}
+    if ballon_rank is not None:
+        h["ballonRank"] = ballon_rank
+    return h
+
+
+class FromSaveTests(unittest.TestCase):
+    def convert(self, history):
+        life = {"core": {"id": "c1", "player": {"name": "n", "position": "ST", "nationality": "kr"}},
+                "history": history, "careerAwards": [{"category": "발롱도르", "awardYear": 2031}]}
+        return from_save.convert_life(life, "src", "ST", None)[0]["seasons"]
+
+    def test_status_mapping(self):
+        s = self.convert([_season("2030/31", ballon_award=True), _season("2031/32", ballon_rank=3),
+                          _season("2032/33")])
+        self.assertEqual([(x["ballon_status"], x["ballon_rank"]) for x in s],
+                         [("won", 1), ("ranked", 3), ("not_candidate", None)])
+        self.assertEqual(s[0]["ballon_value"], 5.0)
+        self.assertEqual(s[0]["ucl_result"], "semi")
+        self.assertEqual(s[0]["league_rank"], 1)
+
+    def test_national_stats_are_added_to_totals(self):
+        nat = [{"selected": True, "id": "worldCup", "result": "준우승 · 2위",
+                "stats": {"apps": 10, "starts": 10, "goals": 5, "assists": 0, "ratingSum": 100.0}}]
+        s = self.convert([_season("2030/31", nationals=nat)])[0]
+        self.assertEqual((s["goals"], s["apps"], s["avg_rating"]), (25, 50, 8.0))
+        self.assertEqual(s["intl_event"], "worldcup")
+
+    def test_school_and_odd_labels_skipped(self):
+        h = _season("2026")
+        h2 = _season("2027/28"); h2["path"] = "school"
+        self.assertEqual(self.convert([h, h2]), [])
 
 
 if __name__ == "__main__":

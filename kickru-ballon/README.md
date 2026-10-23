@@ -10,9 +10,12 @@
 | `SKILL.md` | Chrome에서 쓰는 수집 스킬 (localStorage 읽기 전용 덤프) |
 | `data/seed/*.json` | 직접 옮겨 적은 시드 (Ikarus 13행, 데이터A 16행. 순위 확인 시즌은 이보다 적음) |
 | `data/raw/` | 수집한 덤프 (git 제외) |
+| `data/real/` | 덤프에서 변환한 시즌 기록 (원본 세이브 기준) |
 | `scripts/validate.py` | 스키마·정합성 검사 |
 | `scripts/explore.py` | 포지션별 기술통계, 순위 상관 |
-| `scripts/ingest.py` | 덤프 구조 확인(`inspect`)과 변환(`convert`) |
+| `scripts/from_save.py` | 실제 세이브(덤프) -> 스키마 변환 (`data/real/`) |
+| `scripts/compare.py` | 수작업 시드와 원본 세이브 대조 |
+| `scripts/ingest.py` | 범용 덤프 구조 확인(`inspect`)과 매핑 변환(`convert`) |
 | `tests/` | `python3 -m unittest discover -s tests` |
 
 파이썬 3 표준 라이브러리만 씁니다 (3.13에서 확인).
@@ -50,10 +53,29 @@ python3 -m unittest discover -s tests
   리그 2위가 원인일 수 있으나(H8, 가설) 표본 1개라 단정할 수 없고, 오기록일 가능성도 있습니다. 실제 세이브와 먼저 대조하세요.
 - 문서 7장 예시의 "2036/37 나이 29"와 3장의 "46/47에 38세"는 서로 맞지 않습니다(10시즌 차이라면 39세). 그래서 `age`는 비웠습니다.
 
+## 실제 세이브에서 확인된 것 (2026-10-23 덤프)
+
+localStorage 키 `second-life-football-legends-v2` 하나에 커리어 2개(이카루스, 데이터A)가 들어 있습니다.
+값은 JSON 문자열 배열이고 원소를 한 번 더 파싱해야 합니다.
+
+- **시즌별 발롱 순위가 저장돼 있습니다**: `life.history[].ballonRank`. 필드가 없는 시즌은 후보 탈락(NC)입니다.
+  시드의 발롱 라벨은 비교한 칸 모두 원본과 일치했습니다.
+- **요약 화면의 골·도움·평점 = 클럽 `stats` + 선택된 대표팀 대회 `nationals[].stats`** (친선 제외).
+  Ikarus 45/46으로 확인: 클럽 22G17A + 월드컵 2G6A = 24G23A, 평점 7.32. 평균 평점은 `ratingSum / apps`입니다.
+- 발롱도르 수상 시즌의 `awards`에만 `value`, `benchmark`가 있습니다(예: 5.83 / 4.6). 수상 6건 모두 value >= benchmark이고
+  하나는 value == benchmark(3.97)입니다. **이 값의 의미는 확인되지 않았습니다.** 같은 시즌의 MVP는 value < benchmark인데도
+  수상 항목에 들어 있어서, benchmark를 수상 기준선으로 단정할 수 없습니다. 비수상 시즌에는 이 값이 저장되어 있지 않습니다.
+- 시드 오독 정정: Ikarus 35/36 UCL은 16강이 아니라 8강이고, 43/44는 2위입니다. 문서에 없던 Ikarus 2031/32~2033/34, 2047/48~2048/49 시즌도 있습니다.
+- 세이브에는 현재 포지션만 있고 시즌별 포지션은 없습니다. 이카루스의 ST->CAM 전환 시즌은 문서 기준(46/47)으로 `--switch` 지정했습니다.
+
+실제 데이터로 본 관찰 (탐색적, 표본 작음):
+- Ikarus 44/45는 평점 7.44 / G+A 46으로 수상했고, 42/43은 7.64 / 59인데 후보 탈락입니다. 개인 스탯만으로는 설명되지 않습니다.
+- 43/44는 UCL 우승, 평점 7.67인데 2위입니다. UCL 우승은 충분조건이 아니라는 점은 유지됩니다.
+
 ## 다음 단계의 조건
 
-1. 사용자가 Chrome에서 localStorage 키 구조를 확인해 `ingest.py inspect` 결과를 가져온다.
-2. 시드를 원본과 대조해 `source`를 갱신한다.
+1. 세이브가 쌓이면 같은 순서로 덤프 -> `from_save.py` -> `validate.py` -> `explore.py`.
+2. OVR 위치(`core.player` 안으로 추정)와 컵 결과를 변환기에 추가한다.
 3. 자동 플레이는 `https://kickru.com/terms`를 사용자가 확인한 뒤에만 검토한다.
 
 ## Chrome 스킬로 쓰기

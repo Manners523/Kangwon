@@ -40,7 +40,12 @@ description: kickru.com(벤치에서 발롱까지)의 내 세이브 데이터를
    ```
    출력된 구조를 보고 매핑 파일을 작성한 뒤 `ingest.py convert` → `validate.py` → `explore.py` 순서로 진행한다.
 
+## 알려진 구조 (2026-10-23 관측)
+메인 세이브 키는 `second-life-football-legends-v2` (약 74만 자). 그 외 `kickru-ranking-*`, `bdo-seen:*` 등은 분석에 필요 없으니 덤프하지 않는다.
+값은 JSON 문자열 배열이며, 원소를 한 번 더 파싱하면 `life.history[]`에 시즌 기록과 `ballonRank`가 있다.
+변환은 `python3 scripts/from_save.py data/raw/dump_*.json data/real`.
+
 ## 신뢰도
-세이브 JSON의 구조는 **아직 확인되지 않았다.** "시즌별 기록이 JSON으로 들어 있을 가능성"은 가설이다.
+위 구조는 한 번의 덤프에서 관측한 것이라 게임 업데이트로 바뀔 수 있다.
 키가 없거나 시즌 기록이 보이지 않으면, 그 사실을 그대로 보고하고 가이드의 "커리어 파일 보관"(내보내기) 기능을 확인하게 한다.
 추측으로 필드를 채우지 않는다. 읽을 수 없는 값은 null이다.
