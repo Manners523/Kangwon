@@ -62,6 +62,25 @@ python3 bot/recon.py --url https://kickru.com/ --profile .pw-profile
 python3 -m unittest discover -s tests
 ```
 
+## 0. 가장 쉬운 실행: run.bat (Windows)
+
+`run.bat`은 **실행할 때마다 최신 코드를 자동으로 받고** 곧바로 드라이버를 시작한다.
+파일을 직접 바꿀 필요가 없다. 수집 데이터(`data\raw`, `data\recon`, `data\runs`)와 브라우저 프로필(`.pw-profile`), `bot\config.json`은 건드리지 않는다.
+
+처음 한 번만 `kickru-ballon` 폴더에서 PowerShell을 열어 아래 두 줄로 두 파일을 받는다:
+```
+Invoke-WebRequest https://raw.githubusercontent.com/Manners523/Kangwon/claude/great-albattani-2npld4/kickru-ballon/update.ps1 -OutFile update.ps1
+Invoke-WebRequest https://raw.githubusercontent.com/Manners523/Kangwon/claude/great-albattani-2npld4/kickru-ballon/run.bat -OutFile run.bat
+```
+그다음부터는 이것만 쓴다:
+```
+.\run.bat --name exp-002 --max-actions 40
+```
+- 업데이트에 실패하면(인터넷 문제 등) 가지고 있는 버전으로 계속 진행한다.
+- 현재 버전은 폴더의 `VERSION.txt`(커밋 앞 7자리)에서 확인한다.
+- `run.bat`과 `update.ps1` 자체는 업데이트 대상이 아니다(실행 중인 파일을 덮어쓰지 않으려는 것). 이 둘이 바뀌면 위 두 줄을 다시 실행한다.
+- 주의: 이 방식은 GitHub 이 브랜치의 코드를 내려받아 실행한다. 이 저장소에 올라온 코드만 믿는 구조다.
+
 ## 5. 자동 플레이 (driver.py)
 
 사람이 플레이할 필요가 없다. 처음 한 번만 **직접 서명**이 필요할 수 있다(고교 -> 유스 첫 계약 화면).
